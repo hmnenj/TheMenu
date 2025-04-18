@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 
-const API_KEY = "2ba30ad7d7504bdaa523d84823eab915";
+const API_KEY = "ae87762fc0ca4585809a2d2c12251b72";
 
 const loadFonts = () => {
   return Font.loadAsync({
@@ -27,7 +27,7 @@ export default function Index() {
       const data = await response.json();
       setRecommendedRecipes(data.results || []);
     } catch (error) {
-      console.error("Erro ao buscar receitas:", error);
+      console.error("Error in search a recipe", error);
     }
   };
 
@@ -76,6 +76,7 @@ export default function Index() {
             <Text style={styles.recipeTitle}>{item.title}</Text>
           </View>
         )}
+        showsHorizontalScrollIndicator={false}
       />
     </View>
   );
@@ -113,8 +114,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingHorizontal: 10,
     alignItems: "center",
-    marginBottom: 20,
-    height: 50,
+    marginBottom: 30,
   },
   inputFake: {
     fontFamily: "Poppins-Regular",
@@ -133,16 +133,17 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: "center",
     width: 150,
+    height: 150
   },
   recipeImage: {
-    width: 120,
-    height: 120,
+    width: 150,
+    height: 150,
     borderRadius: 10,
   },
   recipeTitle: {
     marginTop: 10,
     fontFamily: "Poppins-Regular",
-    fontSize: 14,
+    fontSize: 15,
     color: "#4B7F3A",
     textAlign: "center",
   },

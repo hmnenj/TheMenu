@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "expo-router";
 import { View, TextInput, StyleSheet, KeyboardAvoidingView, Platform, FlatList, Text, Image, TouchableOpacity } from "react-native";
 
-const API_KEY = "2ba30ad7d7504bdaa523d84823eab915";
+const API_KEY = "ae87762fc0ca4585809a2d2c12251b72";
 
 export default function Search() {
     const inputRef = useRef(null);
@@ -26,7 +26,7 @@ export default function Search() {
             const data = await response.json();
             setResults(data.results || []);
         } catch (error) {
-            console.error("Erro na busca:", error);
+            console.error("Error in search", error);
         }
     };
 
@@ -59,6 +59,11 @@ export default function Search() {
                     <View style={styles.recipeCard}>
                         <Image source={{ uri: item.image }} style={styles.recipeImage} />
                         <Text style={styles.recipeTitle}>{item.title}</Text>
+                        <Link href={`/details?id=${item.id}`} asChild>
+                        <TouchableOpacity>
+                            <Text style={styles.details}>Details</Text>
+                        </TouchableOpacity>
+                        </Link>
                     </View>
                 )}
                 ListEmptyComponent={
@@ -108,19 +113,27 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 15,
         padding: 10,
-        backgroundColor: "#f9f9f9",
+        backgroundColor: "#eee",
         borderRadius: 10,
     },
     recipeImage: {
         width: 60,
         height: 60,
-        borderRadius: 8,
+        borderRadius: 10,
         marginRight: 10,
     },
     recipeTitle: {
         fontSize: 16,
         fontWeight: "500",
         flexShrink: 1,
+        fontFamily: "Poppins-SemiBold",
+
+    },
+    details:{
+        fontFamily: "Poppins-SemiBold",
+        marginLeft: 10,
+        alignItems: "baseline",
+        color: "#4B7F3A",
     },
     noResults: {
         textAlign: "center",
