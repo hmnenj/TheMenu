@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "queen-of-sauce",
-    "slug": "queen-of-sauce",
+    "name": "themenu",
+    "slug": "themenu",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.themenu"
     },
     "web": {
       "bundler": "metro",

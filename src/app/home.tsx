@@ -1,163 +1,149 @@
-import React, { useState } from "react";
-import {
-    View,
-    Text,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    FlatList,
-    Image,
-    ImageBackground
-} from "react-native";
-import { Link } from "expo-router";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Image, FlatList, TextInput, Pressable } from "react-native";
+import { useRouter } from "expo-router";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 
 const API_KEY = "2ba30ad7d7504bdaa523d84823eab915";
 
 const loadFonts = () => {
-    return Font.loadAsync({
-        "Poppins-Regular": require("../../assets/fonts/Poppins-Regular.ttf"),
-        "Poppins-Bold": require("../../assets/fonts/Poppins-Bold.ttf"),
-    });
+  return Font.loadAsync({
+    "Poppins-Regular": require("../../assets/fonts/Poppins-Regular.ttf"),
+    "Poppins-Bold": require("../../assets/fonts/Poppins-Bold.ttf"),
+    "Poppins-SemiBold": require("../../assets/fonts/Poppins-SemiBold.ttf"),
+  });
 };
 
-export default function Home() {
-    const [query, setQuery] = useState("");
-    const [recipes, setRecipes] = useState([]);
-    const [fontsLoaded, setFontsLoaded] = useState(false);
+export default function Index() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [recommendedRecipes, setRecommendedRecipes] = useState([]);
+  const router = useRouter();
 
-    const handleSearch = async () => {
-        if (!query.trim()) return;
-
-        try {
-            const response = await fetch(
-                `https://api.spoonacular.com/recipes/complexSearch?query=${query}&number=10&apiKey=${API_KEY}`
-            );
-            const data = await response.json();
-            setRecipes(data.results || []);
-        } catch (error) {
-            console.error("Erro ao buscar receitas:", error);
-        }
-    };
-
-    if (!fontsLoaded) {
-        return (
-            <AppLoading
-                startAsync={loadFonts}
-                onFinish={() => setFontsLoaded(true)}
-                onError={console.warn}
-            />
-        );
+  const fetchRecommendedRecipes = async () => {
+    try {
+      const response = await fetch(
+        `https://api.spoonacular.com/recipes/complexSearch?query=recipe&number=3&apiKey=${API_KEY}`
+      );
+      const data = await response.json();
+      setRecommendedRecipes(data.results || []);
+    } catch (error) {
+      console.error("Erro ao buscar receitas:", error);
     }
+  };
 
+  useEffect(() => {
+    fetchRecommendedRecipes();
+  }, []);
+
+  if (!fontsLoaded) {
     return (
-        <ImageBackground
-            source={require("../../assets/images/background.jpg")}
-            style={styles.container}
-            resizeMode="cover"
-        >
-            <Text style={styles.title}>Queen of Sauce Recipes</Text>
-
-            <View style={styles.searchContainer}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Search for a recipe"
-                    value={query}
-                    onChangeText={setQuery}
-                />
-                <TouchableOpacity style={styles.button} onPress={handleSearch}>
-                    <Text style={styles.buttonText}>Search</Text>
-                </TouchableOpacity>
-            </View>
-
-            <FlatList
-                data={recipes}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.card}>
-                        <Image source={{ uri: item.image }} style={styles.image} />
-                        <View style={{ flex: 1 }}>
-                            <Text style={styles.recipeTitle}>{item.title}</Text>
-                        </View>
-                    </View>
-                )}
-            />
-            <Link href="/" asChild>
-                <TouchableOpacity style={styles.backbutton}>
-                    <Text style={styles.buttonText}>Back</Text>
-                </TouchableOpacity>
-            </Link>
-        </ImageBackground>
+      <AppLoading
+        startAsync={loadFonts}
+        onFinish={() => setFontsLoaded(true)}
+        onError={console.warn}
+      />
     );
+  }
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>The Menu</Text>
+      <Text style={styles.subtitle}>Welcome to The Menu App</Text>
+
+      <Pressable onPress={() => router.push("/search")}>
+        <View style={styles.searchContainer}>
+          <TextInput
+            placeholder="Search a recipe"
+            editable={false}
+            pointerEvents="none"
+            style={styles.inputFake}
+          />
+          <Image
+            style={styles.searchImg}
+            source={require("../../assets/images/search.png")}
+          />
+        </View>
+      </Pressable>
+
+      <Text style={styles.text}>Recommended Recipes</Text>
+      <FlatList
+        horizontal
+        data={recommendedRecipes}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.recipeCard}>
+            <Image source={{ uri: item.image }} style={styles.recipeImage} />
+            <Text style={styles.recipeTitle}>{item.title}</Text>
+          </View>
+        )}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: 50,
-        paddingHorizontal: 20,
-        backgroundColor: "#fffaf0",
-    },
-    title: {
-        fontSize: 26,
-        fontWeight: "bold",
-        marginBottom: 20,
-        textAlign: "center",
-        color: "#ad0050",
-        fontFamily: "Poppins-Bold",
-    },
-    searchContainer: {
-        flexDirection: "row",
-        marginBottom: 20,
-        gap: 10,
-    },
-    input: {
-        flex: 1,
-        borderWidth: 1,
-        padding: 10,
-        borderRadius: 8,
-        backgroundColor: "#fff",
-        fontFamily: "Poppins-Regular",
-    },
-    button: {
-        backgroundColor: "#ad0050",
-        paddingHorizontal: 16,
-        justifyContent: "center",
-        borderRadius: 8,
-    },
-    buttonText: {
-        color: "#fff",
-        fontWeight: "bold",
-        fontFamily: "Poppins-Bold",
-    },
-    card: {
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "rgba(74, 224, 255 ,0.7)",
-        borderRadius: 10,
-        marginBottom: 12,
-        padding: 10,
-        elevation: 3,
-    },
-    image: {
-        width: 60,
-        height: 60,
-        borderRadius: 8,
-        marginRight: 10,
-    },
-    recipeTitle: {
-        flex: 1,
-        fontSize: 16,
-        fontFamily: "Poppins-Regular",
-        color: "#ad0050",
-    },
-    backbutton: {
-        backgroundColor: "#ad0050",
-        alignContent: "center",
-        alignItems:"center",
-        borderRadius: 10,
-        padding: 10,
-        marginBottom: 10
-    },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 30,
+  },
+  title: {
+    fontSize: 32,
+    color: "#4B7F3A",
+    fontFamily: "Poppins-Bold",
+    textAlign: "left",
+    marginBottom: 5,
+  },
+  subtitle: {
+    fontSize: 20,
+    color: "#4B7F3A",
+    fontFamily: "Poppins-SemiBold",
+    marginBottom: 20,
+  },
+  text: {
+    color: "#000",
+    fontFamily: "Poppins-Regular",
+    fontSize: 25,
+    marginBottom: 5,
+    textAlign: "left",
+  },
+  searchContainer: {
+    flexDirection: "row",
+    backgroundColor: "#eee",
+    borderRadius: 15,
+    paddingHorizontal: 10,
+    alignItems: "center",
+    marginBottom: 20,
+    height: 50,
+  },
+  inputFake: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 16,
+    flex: 1,
+    color: "#666",
+  },
+  searchImg: {
+    width: 20,
+    height: 20,
+  },
+  recipeCard: {
+    marginHorizontal: 10,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 10,
+    alignItems: "center",
+    width: 150,
+  },
+  recipeImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 10,
+  },
+  recipeTitle: {
+    marginTop: 10,
+    fontFamily: "Poppins-Regular",
+    fontSize: 14,
+    color: "#4B7F3A",
+    textAlign: "center",
+  },
 });
