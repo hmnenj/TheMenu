@@ -35,7 +35,7 @@ export default function Details() {
 
     return (
         <ScrollView style={styles.container}>
-            <Link href="/search" asChild>
+            <Link href="/home" asChild>
                 <TouchableOpacity style={styles.backButton}>
                     <Text style={styles.backText}>← Back</Text>
                 </TouchableOpacity>

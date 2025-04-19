@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, FlatList, TextInput, Pressable } from "react-native";
-import { useRouter } from "expo-router";
+import { View, Text, StyleSheet, Image, FlatList, TextInput, Pressable, TouchableOpacity } from "react-native";
+import { useRouter, Link } from "expo-router";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 
@@ -74,6 +74,11 @@ export default function Index() {
           <View style={styles.recipeCard}>
             <Image source={{ uri: item.image }} style={styles.recipeImage} />
             <Text style={styles.recipeTitle}>{item.title}</Text>
+            <Link href={`/details?id=${item.id}`} asChild>
+              <TouchableOpacity>
+                <Text style={styles.details}>Details</Text>
+              </TouchableOpacity>
+            </Link>
           </View>
         )}
         showsHorizontalScrollIndicator={false}
@@ -146,5 +151,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#4B7F3A",
     textAlign: "center",
+  },
+  details:{
+    fontFamily: "Poppins-SemiBold",
+    marginTop: 10,
   },
 });
