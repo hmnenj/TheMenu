@@ -16,12 +16,12 @@ export default function NotFound() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Página não encontrada</Text>
-      <Text style={styles.message}>Essa rota não existe.</Text>
+      <Text style={styles.title}>Page not found</Text>
+      <Text style={styles.message}>This route doesn't exist.</Text>
 
       <Link href="/" asChild>
         <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Voltar ao início</Text>
+          <Text style={styles.buttonText}>Go back to home</Text>
         </TouchableOpacity>
       </Link>
     </View>
